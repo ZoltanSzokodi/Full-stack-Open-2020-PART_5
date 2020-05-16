@@ -1,10 +1,33 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 
-const NewBlog = ({
-  newBlog: { title, author, url },
-  handleChange,
-  handleSubmit,
-}) => {
+const BlogForm = ({ createBlog }) => {
+  const [newBlog, setNewBlog] = useState({
+    title: '',
+    author: '',
+    url: '',
+  });
+
+  const handleChange = e => {
+    setNewBlog({
+      ...newBlog,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    createBlog(newBlog);
+
+    setNewBlog({
+      title: '',
+      author: '',
+      url: '',
+    });
+  };
+
+  const { title, author, url } = newBlog;
+
   return (
     <Fragment>
       <h2>Add new blog to list</h2>
@@ -42,10 +65,10 @@ const NewBlog = ({
             required
           />
         </div>
-        <input type='submit' text='Add' />
+        <button type='submit'>add blog</button>
       </form>
     </Fragment>
   );
 };
 
-export default NewBlog;
+export default BlogForm;

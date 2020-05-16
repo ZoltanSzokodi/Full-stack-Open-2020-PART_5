@@ -1,10 +1,31 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 
-const Login = ({
-  credentials: { username, password },
-  handleChange,
-  handleSubmit,
-}) => {
+const LoginForm = ({ loginUser }) => {
+  const [credentials, setCredentials] = useState({
+    username: '',
+    password: '',
+  });
+
+  const handleChange = e => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    loginUser(credentials);
+
+    setCredentials({
+      username: '',
+      password: '',
+    });
+  };
+
+  const { username, password } = credentials;
+
   return (
     <Fragment>
       <form onSubmit={handleSubmit}>
@@ -30,10 +51,10 @@ const Login = ({
             required
           />
         </div>
-        <input type='submit' text='login' />
+        <button type='submit'>login</button>
       </form>
     </Fragment>
   );
 };
 
-export default Login;
+export default LoginForm;
