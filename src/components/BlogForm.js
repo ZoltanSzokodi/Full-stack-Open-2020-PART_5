@@ -1,38 +1,33 @@
 import React, { Fragment, useState } from 'react';
 
 const BlogForm = ({ createBlog }) => {
-  const [newBlog, setNewBlog] = useState({
+  const initialState = {
     title: '',
     author: '',
     url: '',
-  });
+  };
+  const [{ title, author, url }, setFields] = useState(initialState);
 
   const handleChange = e => {
-    setNewBlog({
-      ...newBlog,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFields(prevState => ({ ...prevState, [name]: value }));
   };
+
+  const handleReset = () => setFields({ ...initialState });
 
   const handleSubmit = e => {
     e.preventDefault();
 
-    createBlog(newBlog);
+    createBlog({ title, author, url });
 
-    setNewBlog({
-      title: '',
-      author: '',
-      url: '',
-    });
+    handleReset();
   };
-
-  const { title, author, url } = newBlog;
 
   return (
     <Fragment>
       <h2>Add new blog to list</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <label>
           title:{' '}
           <input
             onChange={handleChange}
@@ -42,8 +37,9 @@ const BlogForm = ({ createBlog }) => {
             placeholder='Add title...'
             required
           />
-        </div>
-        <div>
+        </label>
+        <br />
+        <label>
           author:{' '}
           <input
             onChange={handleChange}
@@ -53,8 +49,9 @@ const BlogForm = ({ createBlog }) => {
             placeholder='Add author...'
             required
           />
-        </div>
-        <div>
+        </label>
+        <br />
+        <label>
           url:{' '}
           <input
             onChange={handleChange}
@@ -64,7 +61,8 @@ const BlogForm = ({ createBlog }) => {
             placeholder='Add url...'
             required
           />
-        </div>
+        </label>
+        <br />
         <button type='submit'>add blog</button>
       </form>
     </Fragment>

@@ -1,35 +1,31 @@
 import React, { Fragment, useState } from 'react';
 
 const LoginForm = ({ loginUser }) => {
-  const [credentials, setCredentials] = useState({
+  const initialState = {
     username: '',
     password: '',
-  });
+  };
+  const [{ username, password }, setFields] = useState(initialState);
 
   const handleChange = e => {
-    setCredentials({
-      ...credentials,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFields(prevState => ({ ...prevState, [name]: value }));
   };
+
+  const handleReset = () => setFields({ ...initialState });
 
   const handleSubmit = e => {
     e.preventDefault();
 
-    loginUser(credentials);
+    loginUser({ username, password });
 
-    setCredentials({
-      username: '',
-      password: '',
-    });
+    handleReset();
   };
-
-  const { username, password } = credentials;
 
   return (
     <Fragment>
       <form onSubmit={handleSubmit}>
-        <div>
+        <label>
           username:{' '}
           <input
             onChange={handleChange}
@@ -39,8 +35,9 @@ const LoginForm = ({ loginUser }) => {
             placeholder='Add username...'
             required
           />
-        </div>
-        <div>
+        </label>
+        <br />
+        <label>
           password:{' '}
           <input
             onChange={handleChange}
@@ -50,7 +47,8 @@ const LoginForm = ({ loginUser }) => {
             placeholder='Add password...'
             required
           />
-        </div>
+        </label>
+        <br />
         <button type='submit'>login</button>
       </form>
     </Fragment>
