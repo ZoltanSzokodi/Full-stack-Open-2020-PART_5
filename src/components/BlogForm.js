@@ -25,7 +25,6 @@ const BlogForm = ({ createBlog }) => {
 
   return (
     <Fragment>
-      <h2>Add new blog to list</h2>
       <form onSubmit={handleSubmit}>
         <label>
           title:{' '}
