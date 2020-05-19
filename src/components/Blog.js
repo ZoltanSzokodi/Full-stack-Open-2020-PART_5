@@ -1,25 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import blogService from '../services/blogs';
 
-const Blog = ({
-  blog: {
-    id,
-    title,
-    author,
-    likes,
-    url,
-    user: { name },
-  },
-  blogs,
-  setBlogs,
-  user,
-}) => {
+const Blog = ({ blog, blogs, setBlogs, user, setNotification }) => {
   const [visible, setVisible] = useState(false);
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
-    likes.includes(user.id) ? setLiked(true) : setLiked(false);
-  }, [likes, user.id]);
+    blog.likes.includes(user.id) ? setLiked(true) : setLiked(false);
+  }, [blog.likes, user.id]);
 
   // const hideWhenVisible = { display: visible ? 'none' : '' };
   const showWhenVisible = { display: visible ? '' : 'none' };
@@ -27,60 +15,71 @@ const Blog = ({
   const toggleVisibility = () => setVisible(!visible);
 
   const handleLike = async type => {
-    let blog;
+    let resBlogObj;
     try {
       type === 'like'
-        ? (blog = await blogService.like(id))
-        : (blog = await blogService.unlike(id));
+        ? (resBlogObj = await blogService.like(blog.id))
+        : (resBlogObj = await blogService.unlike(blog.id));
 
       const updatedBlogs = blogs.map(b => {
-        if (b.id === blog.id) return blog;
+        if (b.id === resBlogObj.id) return resBlogObj;
         else return b;
       });
-      setBlogs([...updatedBlogs]);
+      setBlogs(updatedBlogs);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const handleUnLike = async () => {
-  //   try {
-  //     const blog = await blogService.unlike(id);
+  const handleDelete = async () => {
+    const confirm = window.confirm(
+      'Are you sure you want to delete this blog?'
+    );
 
-  //     const updatedBlogs = blogs.map(b => {
-  //       if (b.id === blog.id) return blog;
-  //       else return b;
-  //     });
+    if (!confirm) return null;
 
-  //     setBlogs([...updatedBlogs]);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    try {
+      const res = await blogService.remove(blog.id);
+      const updatedBlogs = blogs.filter(b => b.id !== blog.id);
+
+      setBlogs(updatedBlogs);
+      setNotification({
+        success: true,
+        msg: res.message,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className='blog'>
       <div>
-        <span className='title'>{title}</span> -{' '}
-        <span className='author'>{author}</span>
+        <span className='title'>{blog.title}</span> -{' '}
+        <span className='author'>{blog.author}</span>
         <ul style={showWhenVisible}>
           <li>
-            likes - {likes.length}
+            likes - {blog.likes.length}
             {liked ? (
               <button onClick={() => handleLike('unlike')}>unlike</button>
             ) : (
               <button onClick={() => handleLike('like')}>like</button>
             )}
           </li>
-          <li>url - {url}</li>
-          <li>user - {name}</li>
+          <li>url - {blog.url}</li>
+          <li>user - {blog.user.name}</li>
         </ul>
       </div>
       <div>
         <button onClick={toggleVisibility} className='view'>
           {visible ? 'hide' : 'show'}
         </button>
-        <button className='delete'>X</button>
+        <button
+          onClick={handleDelete}
+          className='delete'
+          disabled={user.id !== blog.user.id}>
+          X
+        </button>
       </div>
     </div>
   );

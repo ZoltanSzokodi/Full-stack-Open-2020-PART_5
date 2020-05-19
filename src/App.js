@@ -6,7 +6,7 @@ import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
-import Toggable from './components/Toggable';
+import Togglable from './components/Togglable';
 
 import './App.css';
 
@@ -15,7 +15,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
-  // console.log(blogs);
+  console.log(blogs);
   // console.log(user);
 
   // The createRef method is used to create a blogFormRef ref, that is assigned to the Togglable component containing the creation blog form. The blogFormRef variable acts as a reference to the component.
@@ -38,19 +38,19 @@ const App = () => {
   }, []);
 
   // Reset notifications after 5s
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setNotification(null);
-  //   }, 5000);
-
-  //   return () => clearTimeout(timeout);
-  // }, [notification]);
-
-  // EVENT HANDLERS ============================
-  const resetNotification = () =>
-    setTimeout(() => {
+  useEffect(() => {
+    const timeout = setTimeout(() => {
       setNotification(null);
     }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [notification]);
+
+  // EVENT HANDLERS ============================
+  // const resetNotification = () =>
+  //   setTimeout(() => {
+  //     setNotification(null);
+  //   }, 5000);
 
   const loginUser = async credentialsObj => {
     try {
@@ -65,7 +65,7 @@ const App = () => {
         msg: 'You are logged in',
       });
 
-      resetNotification();
+      // resetNotification();
     } catch (error) {
       console.log(error.response.data.error);
       setNotification({
@@ -73,7 +73,7 @@ const App = () => {
         msg: error.response.data.error,
       });
 
-      resetNotification();
+      // resetNotification();
     }
   };
 
@@ -86,7 +86,7 @@ const App = () => {
       msg: 'Logged out',
     });
 
-    resetNotification();
+    // resetNotification();
   };
   const createBlog = async newBlogObj => {
     // We can hide the form by calling blogFormRef.current.toggleVisibility() after a new blog has been created
@@ -102,7 +102,7 @@ const App = () => {
         msg: 'New blog added',
       });
 
-      resetNotification();
+      // resetNotification();
     } catch (error) {
       console.log(error.response.data.error);
       setNotification({
@@ -110,7 +110,7 @@ const App = () => {
         msg: error.response.data.error,
       });
 
-      resetNotification();
+      // resetNotification();
     }
   };
 
@@ -130,10 +130,15 @@ const App = () => {
       ) : (
         <Fragment>
           <h2>Add new blog to list</h2>
-          <Toggable buttonLabel='new blog' ref={blogFormRef}>
+          <Togglable buttonLabel='new blog' ref={blogFormRef}>
             <BlogForm createBlog={createBlog} />
-          </Toggable>
-          <Blogs blogs={blogs} setBlogs={setBlogs} user={user} />
+          </Togglable>
+          <Blogs
+            blogs={blogs}
+            setBlogs={setBlogs}
+            user={user}
+            setNotification={setNotification}
+          />
         </Fragment>
       )}
     </div>

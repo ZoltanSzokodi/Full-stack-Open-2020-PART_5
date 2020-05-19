@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import PropTypes from 'prop-types';
 
 const LoginForm = ({ loginUser }) => {
   const initialState = {
@@ -53,6 +54,10 @@ const LoginForm = ({ loginUser }) => {
       </form>
     </Fragment>
   );
+};
+
+LoginForm.propTypes = {
+  loginUser: PropTypes.func.isRequired,
 };
 
 export default LoginForm;

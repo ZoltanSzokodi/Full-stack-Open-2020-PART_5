@@ -2,7 +2,7 @@ import React from 'react';
 import Blog from './Blog';
 import sortByLikes from '../helpers/sortByLikes';
 
-const Blogs = ({ blogs, setBlogs, user }) => {
+const Blogs = ({ blogs, setBlogs, user, setNotification }) => {
   return (
     <div>
       <h2>Blogs list</h2>
@@ -13,6 +13,7 @@ const Blogs = ({ blogs, setBlogs, user }) => {
           blogs={blogs}
           setBlogs={setBlogs}
           user={user}
+          setNotification={setNotification}
         />
       ))}
     </div>
