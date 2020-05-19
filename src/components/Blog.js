@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import blogService from '../services/blogs';
 
-const Blog = ({ blog, blogs, setBlogs, user, setNotification }) => {
+const Blog = ({ blog, user, handleDelete, handleLike }) => {
   const [visible, setVisible] = useState(false);
   const [liked, setLiked] = useState(false);
 
@@ -14,44 +13,6 @@ const Blog = ({ blog, blogs, setBlogs, user, setNotification }) => {
 
   const toggleVisibility = () => setVisible(!visible);
 
-  const handleLike = async type => {
-    let resBlogObj;
-    try {
-      type === 'like'
-        ? (resBlogObj = await blogService.like(blog.id))
-        : (resBlogObj = await blogService.unlike(blog.id));
-
-      const updatedBlogs = blogs.map(b => {
-        if (b.id === resBlogObj.id) return resBlogObj;
-        else return b;
-      });
-      setBlogs(updatedBlogs);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDelete = async () => {
-    const confirm = window.confirm(
-      'Are you sure you want to delete this blog?'
-    );
-
-    if (!confirm) return null;
-
-    try {
-      const res = await blogService.remove(blog.id);
-      const updatedBlogs = blogs.filter(b => b.id !== blog.id);
-
-      setBlogs(updatedBlogs);
-      setNotification({
-        success: true,
-        msg: res.message,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className='blog'>
       <div>
@@ -61,9 +22,11 @@ const Blog = ({ blog, blogs, setBlogs, user, setNotification }) => {
           <li>
             likes - {blog.likes.length}
             {liked ? (
-              <button onClick={() => handleLike('unlike')}>unlike</button>
+              <button onClick={() => handleLike('unlike', blog.id)}>
+                unlike
+              </button>
             ) : (
-              <button onClick={() => handleLike('like')}>like</button>
+              <button onClick={() => handleLike('like', blog.id)}>like</button>
             )}
           </li>
           <li>url - {blog.url}</li>
@@ -75,7 +38,7 @@ const Blog = ({ blog, blogs, setBlogs, user, setNotification }) => {
           {visible ? 'hide' : 'show'}
         </button>
         <button
-          onClick={handleDelete}
+          onClick={() => handleDelete(blog.id)}
           className='delete'
           disabled={user.id !== blog.user.id}>
           X

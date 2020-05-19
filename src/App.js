@@ -15,7 +15,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
-  console.log(blogs);
+  // console.log(blogs);
   // console.log(user);
 
   // The createRef method is used to create a blogFormRef ref, that is assigned to the Togglable component containing the creation blog form. The blogFormRef variable acts as a reference to the component.
@@ -114,6 +114,45 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async blogID => {
+    const confirm = window.confirm(
+      'Are you sure you want to delete this blog?'
+    );
+
+    if (!confirm) return null;
+
+    try {
+      const res = await blogService.remove(blogID);
+      const updatedBlogs = blogs.filter(b => b.id !== blogID);
+
+      setBlogs(updatedBlogs);
+      setNotification({
+        success: true,
+        msg: res.message,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleLike = async (type, blogID) => {
+    let resBlogObj;
+    try {
+      type === 'like'
+        ? (resBlogObj = await blogService.like(blogID))
+        : (resBlogObj = await blogService.unlike(blogID));
+
+      const updatedBlogs = blogs.map(b => {
+        if (b.id === resBlogObj.id) return resBlogObj;
+        else return b;
+      });
+
+      setBlogs(updatedBlogs);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       {user && (
@@ -135,9 +174,9 @@ const App = () => {
           </Togglable>
           <Blogs
             blogs={blogs}
-            setBlogs={setBlogs}
             user={user}
-            setNotification={setNotification}
+            handleDelete={deleteBlog}
+            handleLike={toggleLike}
           />
         </Fragment>
       )}
