@@ -15,8 +15,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
-  console.log(blogs);
-  console.log(user);
+  // console.log(blogs);
+  // console.log(user);
 
   // The createRef method is used to create a blogFormRef ref, that is assigned to the Togglable component containing the creation blog form. The blogFormRef variable acts as a reference to the component.
   const blogFormRef = createRef();
@@ -133,7 +133,7 @@ const App = () => {
           <Toggable buttonLabel='new blog' ref={blogFormRef}>
             <BlogForm createBlog={createBlog} />
           </Toggable>
-          <Blogs blogs={blogs} />
+          <Blogs blogs={blogs} setBlogs={setBlogs} user={user} />
         </Fragment>
       )}
     </div>

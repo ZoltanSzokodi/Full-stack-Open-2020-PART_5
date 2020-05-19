@@ -19,4 +19,22 @@ const create = async credentials => {
   return response.data;
 };
 
-export default { setToken, getAll, create };
+const like = async blogID => {
+  const response = await axios.put(
+    `${baseUrl}/${blogID}/likes`,
+    {},
+    {
+      headers: { Authorization: token },
+    }
+  );
+  return response.data;
+};
+
+const unlike = async blogID => {
+  const response = await axios.delete(`${baseUrl}/${blogID}/likes`, {
+    headers: { Authorization: token },
+  });
+  return response.data;
+};
+
+export default { setToken, getAll, create, like, unlike };
